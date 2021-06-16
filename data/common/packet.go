@@ -2,6 +2,11 @@ package common
 
 import "fmt"
 
+type Packet interface {
+	Name() string
+	Version() PacketFormat
+}
+
 // PacketFormat defines the format of the packet based on the game version
 type PacketFormat uint16
 
@@ -22,6 +27,13 @@ var PacketFormat_String = map[PacketFormat]string{
 // "format" appended to the end
 func (f PacketFormat) String() string {
 	return fmt.Sprintf("%s format", PacketFormat_String[f])
+}
+
+// Valid returns if the packet format is considered valid (has a entry in the string
+// dictionary)
+func (f PacketFormat) Valid() bool {
+	_, ok := PacketFormat_String[f]
+	return ok
 }
 
 // PacketType defines the type of the packet
@@ -48,6 +60,8 @@ var (
 	FinalClassificationPacket PacketType = 8
 	// LobbyInfoPacket identifies a Lobby Info Packet
 	LobbyInfoPacket PacketType = 9
+	// AnyPacket is a wildcard packet identifier
+	AnyPacket PacketType = 254
 )
 
 // PacketType_String map from packet type to it's string name
@@ -62,9 +76,17 @@ var PacketType_String = map[PacketType]string{
 	CarStatusPacket:           "Car Status Packet",
 	FinalClassificationPacket: "Final Classification Packet",
 	LobbyInfoPacket:           "Lobby Info Packet",
+	AnyPacket:                 "Any Packet",
 }
 
 // String returns the string value for the packet type
 func (t PacketType) String() string {
 	return PacketType_String[t]
+}
+
+// Valid returns if the packet type is considered valid (has a entry in the string
+// dictionary)
+func (t PacketType) Valid() bool {
+	_, ok := PacketType_String[t]
+	return ok
 }
