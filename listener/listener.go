@@ -18,7 +18,7 @@ const (
 )
 
 // PacketHandler function definition for packet handlers
-type PacketHandler func(common.PacketType, []byte)
+type PacketHandler func([]byte)
 
 // PacketListener interface for a packet listener
 type PacketListener interface {
@@ -77,9 +77,8 @@ func (l *packetListener) HandlePacket(packet []byte) error {
 	}).Info("received packet")
 
 	handlers := append(l.handlers[common.AnyPacket], l.handlers[packetType]...)
-	log.WithField("handlers", handlers).Info("handlers available")
 	for _, handler := range handlers {
-		handler(packetType, packet)
+		handler(packet)
 	}
 
 	return nil
@@ -105,15 +104,15 @@ func (l *packetListener) Start(ctx context.Context) error {
 	}).Info("Listening for UDP packets")
 
 	var buf [2048]byte
-	select {
-	case <-ctx.Done():
-		log.Info("listener context cancelled, exiting gracefully")
-	default:
-		for {
-			var rlen int
-			rlen, _, err = conn.ReadFromUDP(buf[:])
+	for {
+		select {
+		case <-ctx.Done():
+			log.Info("listener context cancelled, exiting gracefully")
+			return nil
+		default:
+			rlen, _, err := conn.ReadFromUDP(buf[:])
 			if err != nil {
-				break
+				return err
 			}
 
 			if len(buf) < 6 {
@@ -126,10 +125,6 @@ func (l *packetListener) Start(ctx context.Context) error {
 				log.WithError(err).Warn("error handling packet")
 			}
 		}
-	}
-
-	if err != nil {
-		return err
 	}
 
 	return nil
