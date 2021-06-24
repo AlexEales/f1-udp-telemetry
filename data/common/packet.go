@@ -4,6 +4,7 @@ import "fmt"
 
 type Packet interface {
 	Name() string
+	PacketSize() uint16
 	Version() PacketFormat
 }
 
