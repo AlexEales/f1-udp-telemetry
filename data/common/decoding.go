@@ -1,9 +1,9 @@
 package common
 
 import (
+	"bytes"
 	"encoding/binary"
 	"fmt"
-	"math"
 )
 
 // DecodingErrorType identifies the type of error which has occurred when decoding
@@ -39,57 +39,15 @@ func NewByteCountMismatchError(typeStr string, expected, actual int) *DecodingEr
 	}
 }
 
-// BytesToFloat takes a slice of 4 bytes and returns a decoded float or errors
-func BytesToFloat(bytes []byte) (float32, error) {
-	if len(bytes) != 4 {
-		return 0.0, NewByteCountMismatchError("float", 4, len(bytes))
+// BytesToStruct takes in bytes, pointer to target struct and the expected byte count and attempts to
+// read the bytes into the target struct.
+func BytesToStruct(data []byte, target interface{}, targetByteCount int) error {
+	if len(data) != targetByteCount {
+		typeStr := fmt.Sprintf("%T", target)
+		return NewByteCountMismatchError(typeStr, targetByteCount, len(data))
 	}
 
-	return bytesToFloat(bytes), nil
-}
-
-// BytesToVec3f takes a slice of 12 bytes and returns a decoded Vec3f or errors
-func BytesToVec3f(bytes []byte) (*Vec3f, error) {
-	if len(bytes) != 12 {
-		return nil, NewByteCountMismatchError("Vec3f", 12, len(bytes))
-	}
-
-	return &Vec3f{
-		X: bytesToFloat(bytes[:4]),
-		Y: bytesToFloat(bytes[4:8]),
-		Z: bytesToFloat(bytes[8:]),
-	}, nil
-}
-
-// BytesToVec4f takes a slice of 16 bytes and returns a decoded Vec4f or errors
-func BytesToVec4f(bytes []byte) (*Vec4f, error) {
-	if len(bytes) != 16 {
-		return nil, NewByteCountMismatchError("Vec4f", 16, len(bytes))
-	}
-
-	return &Vec4f{
-		X: bytesToFloat(bytes[:4]),
-		Y: bytesToFloat(bytes[4:8]),
-		Z: bytesToFloat(bytes[8:12]),
-		W: bytesToFloat(bytes[12:]),
-	}, nil
-}
-
-// BytesToVec3u16 takes a slice of 6 bytes and returns a decoded Vec3u16 or errors
-func BytesToVec3u16(bytes []byte) (*Vec3u16, error) {
-	if len(bytes) != 6 {
-		return nil, NewByteCountMismatchError("Vec3u16", 6, len(bytes))
-	}
-
-	return &Vec3u16{
-		X: binary.LittleEndian.Uint16(bytes[:2]),
-		Y: binary.LittleEndian.Uint16(bytes[2:4]),
-		Z: binary.LittleEndian.Uint16(bytes[4:]),
-	}, nil
-}
-
-// bytesToFloat is a internal conversion which is unchecked
-func bytesToFloat(bytes []byte) float32 {
-	bits := binary.LittleEndian.Uint32(bytes[:])
-	return math.Float32frombits(bits)
+	buf := bytes.NewBuffer(data)
+	binary.Read(buf, binary.LittleEndian, target)
+	return nil
 }

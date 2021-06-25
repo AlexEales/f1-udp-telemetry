@@ -29,14 +29,14 @@ func NewVec4f(x, y, z, w float32) *Vec4f {
 	}
 }
 
-// Vec3u16 represents a 3-component u16 vector
-type Vec3u16 struct {
-	X, Y, Z uint16
+// Vec3i16 represents a 3-component i16 vector
+type Vec3i16 struct {
+	X, Y, Z int16
 }
 
 // NewVec3u16 returns a new Vec3u16 from 3 uint16's
-func NewVec3u16(x, y, z uint16) *Vec3u16 {
-	return &Vec3u16{
+func NewVec3u16(x, y, z int16) *Vec3i16 {
+	return &Vec3i16{
 		X: x,
 		Y: y,
 		Z: z,

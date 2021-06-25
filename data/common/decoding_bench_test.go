@@ -5,40 +5,35 @@ import (
 	"testing"
 )
 
-func BenchmarkBytesToFloat(b *testing.B) {
-	testSet := generateTestSet(b.N, 4)
-	for n := 0; n < b.N; n++ {
-		if _, err := BytesToFloat(testSet[n]); err != nil {
-			b.FailNow()
-		}
-	}
-}
+// TODO: Move this into common decoding folder since we would want to test 2019 and 2020 packets in here too?
 
-func BenchmarkBytesToVec3f(b *testing.B) {
-	testSet := generateTestSet(b.N, 12)
-	for n := 0; n < b.N; n++ {
-		if _, err := BytesToVec3f(testSet[n]); err != nil {
-			b.FailNow()
+func BenchmarkBytesToStruct(b *testing.B) {
+	b.Run("vec3f", func(b *testing.B) {
+		testSet := generateTestSet(b.N, 12)
+		for n := 0; n < b.N; n++ {
+			if err := BytesToStruct(testSet[n], &Vec3f{}, 12); err != nil {
+				b.FailNow()
+			}
 		}
-	}
-}
+	})
 
-func BenchmarkBytesToVec4f(b *testing.B) {
-	testSet := generateTestSet(b.N, 16)
-	for n := 0; n < b.N; n++ {
-		if _, err := BytesToVec4f(testSet[n]); err != nil {
-			b.FailNow()
+	b.Run("vec4f", func(b *testing.B) {
+		testSet := generateTestSet(b.N, 16)
+		for n := 0; n < b.N; n++ {
+			if err := BytesToStruct(testSet[n], &Vec4f{}, 16); err != nil {
+				b.FailNow()
+			}
 		}
-	}
-}
+	})
 
-func BenchmarkBytesToVec3u16(b *testing.B) {
-	testSet := generateTestSet(b.N, 6)
-	for n := 0; n < b.N; n++ {
-		if _, err := BytesToVec3u16(testSet[n]); err != nil {
-			b.FailNow()
+	b.Run("vec3i16", func(b *testing.B) {
+		testSet := generateTestSet(b.N, 6)
+		for n := 0; n < b.N; n++ {
+			if err := BytesToStruct(testSet[n], &Vec3i16{}, 6); err != nil {
+				b.FailNow()
+			}
 		}
-	}
+	})
 }
 
 func generateTestSet(tests, size int) [][]byte {

@@ -5,6 +5,7 @@ import "f1-udp-telemetry/data/common"
 // PacketHeaderByteCount represents the number of bytes that makes up a PacketHeader
 const PacketHeaderByteCount = 24
 
+// PacketHeader is the common header for all packets and contains information about the packet
 type PacketHeader struct {
 	// Format is the packet format (2020, 2019, ...)
 	Format common.PacketFormat
