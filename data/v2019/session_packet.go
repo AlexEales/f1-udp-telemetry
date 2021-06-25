@@ -2,8 +2,6 @@ package v2019
 
 import "f1-udp-telemetry/data/common"
 
-// TODO: Need to add in some of the enums required for this
-
 // SessionPacketByteCount represents the number of bytes that make up a session packet
 const SessionPacketByteCount = 149
 
@@ -16,8 +14,8 @@ type SessionPacket struct {
 	TotalLaps                 uint8
 	TrackLengthInMeters       uint16
 	SessionType               common.SessionType
-	TrackID                   int8
-	Formula                   uint8
+	TrackID                   common.Track
+	Formula                   common.Formula
 	SessionTimeLeftInSeconds  uint16
 	SessionDurationInSeconds  uint16
 	PitSpeedLimitInKPH        uint8
@@ -27,7 +25,7 @@ type SessionPacket struct {
 	SLIProNativeIsSupported   bool
 	NumMarshalZones           uint8
 	MarshalZones              [21]MarshalZone
-	SafetyCarStatus           uint8
+	SafetyCarStatus           common.SafetyCarStatus
 	IsNetworkGame             bool
 }
 
