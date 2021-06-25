@@ -1,5 +1,16 @@
 package common
 
+// DriverStatus represents where the driver is on track and what kind of lap they may be on
+type DriverStatus uint8
+
+const (
+	InGarage  = DriverStatus(0)
+	FlyingLap = DriverStatus(1)
+	InLap     = DriverStatus(2)
+	OutLap    = DriverStatus(3)
+	OnTrack   = DriverStatus(4)
+)
+
 // Formula is the type of formula racing that is occuring
 type Formula uint8
 
@@ -10,6 +21,28 @@ const (
 	F1Generic = Formula(3)
 )
 
+// PitStatus represents the cars position in relation to the pit lane
+type PitStatus uint8
+
+const (
+	NoPitStatus = PitStatus(0)
+	Pitting     = PitStatus(1)
+	InPitArea   = PitStatus(2)
+)
+
+// ResultStatus represents the status of the driver for the given lap
+type ResultStatus uint8
+
+const (
+	InvalidResultStatus = ResultStatus(0)
+	Inactive            = ResultStatus(1)
+	Active              = ResultStatus(2)
+	Finished            = ResultStatus(3)
+	Disqualified        = ResultStatus(4)
+	NotClassified       = ResultStatus(5)
+	Retired             = ResultStatus(6)
+)
+
 // SafetyCarStatus represents the status of the safety car on the circuit
 type SafetyCarStatus uint8
 
@@ -17,6 +50,15 @@ const (
 	NoSafetyCar      = SafetyCarStatus(0)
 	FullSafetyCar    = SafetyCarStatus(1)
 	VirtualSafetyCar = SafetyCarStatus(2)
+)
+
+// Sector represents which sector on the track the car is in
+type Sector uint8
+
+const (
+	Sector1 = Sector(0)
+	Sector2 = Sector(1)
+	Sector3 = Sector(2)
 )
 
 // SessionType represents the type of session currently happening
